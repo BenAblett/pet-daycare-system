@@ -1,13 +1,12 @@
 package models;
 
-import utils.Utilities;
-
 public abstract class Mammal extends Pet{
 
     private char sex = 'U';          // default Unknown
     private boolean vaccinated = false;
     private double weight = 2;       // default minimum
     private boolean neutered = false;
+
 
     //Constructor
     public Mammal(String name, int age, Owner owner, int id,
@@ -32,6 +31,8 @@ public abstract class Mammal extends Pet{
 
     //Setters
     public void setSex(char sex) {
+        sex = Character.toUpperCase(sex);
+
         if (isValidSex(sex)) {
             this.sex = sex;
         }
@@ -42,28 +43,27 @@ public abstract class Mammal extends Pet{
     }
 
     public void setWeight(double weight) {
-        if (Utilities.validRange(weight, 2, 200)) {
-            this.weight = weight;
-        }
+        this.weight = weight;
     }
 
     public void setNeutered(boolean neutered) {
-        this.neutered = neutered;
+    this.neutered = neutered;
     }
 
     //Helper
     private boolean isValidSex(char sex) {
-        return sex == 'M' || sex == 'F' || sex == 'U';
+    return sex == 'M' || sex == 'F' || sex == 'U';
     }
-
 
     //toString
     @Override
     public String toString() {
         return super.toString() +
-                ", sex=" + sex +
-                ", vaccinated=" + vaccinated +
-                ", weight=" + weight +
-                ", neutered=" + neutered;
+                ", sex: " + sex +
+                ", vaccinated: " + (vaccinated ? "Yes" : "No") +
+                ", weight: " + weight +
+                ", neutered: " + (neutered ? "Yes" : "No");
     }
+
+
 }

@@ -81,4 +81,17 @@ public class ScannerInput {
         return input.next().charAt(0);
     }
 
+    public static boolean readNextBoolean(String prompt) {
+        do {
+            Scanner scanner = new Scanner(System.in);
+            System.out.print(prompt + " (true/false): ");
+            String input = scanner.next().toLowerCase();
+
+            if (input.equals("true") || input.equals("t")) return true;
+            if (input.equals("false") || input.equals("f")) return false;
+
+            System.err.println("\tEnter true or false please.");
+        } while (true);
+    }
+
 }

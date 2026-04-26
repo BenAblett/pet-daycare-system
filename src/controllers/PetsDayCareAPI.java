@@ -12,6 +12,7 @@ package controllers;
  import java.util.ArrayList;
 
 
+
  public class PetsDayCareAPI implements ISerializer {
 
      private ArrayList<Pet> pets;
@@ -83,11 +84,10 @@ package controllers;
          return pets.add(pet);
      }
 
-     public Pet deletePetByIndex(int index) {
+     public void deletePetByIndex(int index) {
          if (isValidPetIndex(index)) {
-             return pets.remove(index);
+             pets.remove(index);
          }
-         return null;
      }
 
      public Pet deletePetById(int id) {
@@ -165,6 +165,39 @@ package controllers;
 
          return totalDays / pets.size();
      }
+
+     // Convert y/n inputs into boolean[]
+     public static boolean[] buildStayDays(String[] inputs) {
+         if (inputs == null || inputs.length != 7) {
+             return new boolean[7]; // default: all false
+         }
+
+         boolean[] days = new boolean[7];
+
+         for (int i = 0; i < 7; i++) {
+             days[i] = inputs[i] != null &&
+                     inputs[i].equalsIgnoreCase("y");
+         }
+
+         return days;
+     }
+
+     // Optional: pretty print days (useful for toString/debugging)
+     public static String formatDays(boolean[] days) {
+         if (days == null) return "None";
+
+         String[] names = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+         String result = "";
+
+         for (int i = 0; i < days.length; i++) {
+             if (days[i]) {
+                 result += names[i] + " ";
+             }
+         }
+
+         return result.isEmpty() ? "None" : result.trim();
+     }
+
 
      // TODO  Add a method  getPet(int) which returns a Pet object:
      //       - if the supplied index is valid, the Pet object at that location is returned
@@ -252,6 +285,87 @@ package controllers;
 
          if (result.isEmpty()) return "No Dangerous Dogs in the Kennels";
          return result.trim();
+     }
+
+     public String listAllIndoorCats() {
+         if (pets.isEmpty()) return "No Pets";
+
+         String result = "";
+         int index = 0;
+
+         for (Pet pet : pets) {
+             if (pet instanceof Cat cat) {
+                 if (cat.isIndoorCat()) {
+                     result += index + ": " + cat + "\n";
+                 }
+             }
+             index++;
+         }
+
+         if (result.isEmpty()) return "No Indoor Cats";
+         return result;
+     }
+
+     public String listAllCatsByFavouriteToy(String toy) {
+         if (pets.isEmpty()) return "No Pets";
+
+         String result = "";
+         int index = 0;
+
+         for (Pet pet : pets) {
+             if (pet instanceof Cat cat) {
+                 if (cat.getFavouriteToy() != null &&
+                         cat.getFavouriteToy().equalsIgnoreCase(toy)) {
+
+                     result += index + ": " + cat + "\n";
+                 }
+             }
+             index++;
+         }
+
+         if (result.isEmpty()) {
+             return "No Cats with favourite toy " + toy;
+         }
+
+         return result;
+     }
+
+     public String listDogsOlderThanAge(int age) {
+         if (pets.isEmpty()) return "No Pets";
+
+         String result = "";
+         int index = 0;
+
+         for (Pet pet : pets) {
+             if (pet instanceof Dog dog) {
+                 if (dog.getAge() > age) {
+                     result += index + ": " + dog + "\n";
+                 }
+             }
+             index++;
+         }
+
+         if (result.isEmpty()) return "No Dogs older than " + age;
+         return result;
+     }
+
+     public String listAllNeuteredAnimals() {
+         if (pets.isEmpty()) return "No Pets";
+
+         String result = "";
+         int index = 0;
+
+         for (Pet pet : pets) {
+             if (pet instanceof Mammal mammal) {
+                 if (mammal.isNeutered()) {
+                     result += index + ": " + mammal + "\n";
+                 }
+             }
+             index++;
+         }
+
+         if (result.isEmpty()) return "No Neutered Animals";
+         return result;
      }
 
 

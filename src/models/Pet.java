@@ -4,8 +4,6 @@ import utils.Utilities;
 
 public abstract class Pet {
 
-    private static  int nextId=1000;
-
     private int id;
     private String name;
     private Owner owner;
