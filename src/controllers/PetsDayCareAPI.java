@@ -2,45 +2,96 @@
 
 package controllers;
 
-import utils.ISerializer;
+ import models.Pet;
+ import utils.ISerializer;
+ import utils.Utilities;
+
+ import java.io.File;
+ import java.util.ArrayList;
 
 
-public class PetsDayCareAPI implements ISerializer {
-    @Override
-    public void save() throws Exception {
+ public class PetsDayCareAPI implements ISerializer {
+     @Override
+     public void save() throws Exception {
 
-    }
+     }
 
-    @Override
-    public void load() throws Exception {
+     @Override
+     public void load() throws Exception {
 
-    }
+     }
 
-    @Override
-    public String fileName() {
-        return "";
-    }
-//    private ArrayList<Pet> pets;
-//    private String name;
-//    private int maxNumberOfPets;
-//    private File file;
+     @Override
+     public String fileName() {
+         return "";
+     }
 
-    //-------------------------------------
-    //  Constructor
-    //-------------------------------------
-    //TODO array list of pets, should be empty at the start.
-    //public PetsDayCareAPI(String name, int maxNumberOfPets, File file) {
+     private ArrayList<Pet> pets;
+     private String name;
+     private int maxNumberOfPets;
+     private File file;
 
-    //TODO array list of pets, should be empty at the start.
-    //     When creating the PetsDayCare, truncate the name to 20 characters.
-    //     When updating an existing DayCare, only update the name if it is 10 characters or less.
-    //     number of pets must be must be >= 10 <= 100 default to 10
-    //     file  is the name of the file that you will load from / save to
-    }
+     //-------------------------------------
+     //  Constructor
+     //-------------------------------------
+     //TODO array list of pets, should be empty at the start.
+     public PetsDayCareAPI(String name, int maxNumberOfPets, File file) {
+         this.pets = new ArrayList<>();
 
-    //-------------------------------------
-    //  Setters/Getters
-    //-------------------------------------
+         // name → truncate to 20 chars
+         this.name = Utilities.truncateString(name, 20);
+
+         // max pets → 10–100, default 10
+         if (Utilities.validRange(maxNumberOfPets, 10, 100)) {
+             this.maxNumberOfPets = maxNumberOfPets;
+         } else {
+             this.maxNumberOfPets = 10;
+         }
+
+         this.file = file;
+
+         //TODO array list of pets, should be empty at the start.
+         //     When creating the PetsDayCare, truncate the name to 20 characters.
+         //     When updating an existing DayCare, only update the name if it is 10 characters or less.
+         //     number of pets must be must be >= 10 <= 100 default to 10
+         //     file  is the name of the file that you will load from / save to
+     }
+
+     //-------------------------------------
+     //  Setters/Getters
+     //-------------------------------------
+     public String getName() {
+         return name;
+     }
+
+     public int getMaxNumberOfPets() {
+         return maxNumberOfPets;
+     }
+
+     public ArrayList<Pet> getPetsArray() {
+         return pets;
+     }
+
+     public void setName(String name) {
+         if (name != null && name.length() <= 10) {
+             this.name = name;
+         }
+     }
+
+     public void setMaxNumberOfPets(int maxNumberOfPets) {
+         if (Utilities.validRange(maxNumberOfPets, 10, 100)) {
+             this.maxNumberOfPets = maxNumberOfPets;
+         }
+     }
+
+     public void setPetsArray(ArrayList<Pet> pets) {
+         if (pets != null) {
+             this.pets = pets;
+         }
+     }
+ }
+
+
     //TODO Add a getter and setter for each field, that adheres to the  validation rules as per spec
 
 
