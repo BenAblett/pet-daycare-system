@@ -9,11 +9,11 @@ public abstract class Pet {
     private int id;
     private String name;
     private Owner owner;
-    private boolean[] daysAttending;
+    private boolean[] daysAttending = {false,false,false,false,false,false,false};
     private int age;
 
     public Pet(String name, int age, Owner owner, int id) {
-        setName(name);
+        this.name = Utilities.truncateString(name, 20);
         setAge(age);
         setOwner(owner);
         setId(id);
@@ -34,7 +34,9 @@ public abstract class Pet {
 
     //Setters
     public void setName(String name) {
-        this.name = Utilities.truncateString(name,30);
+        if (name != null && name.length() <= 20) {
+            this.name = name;
+        }
     }
 
     public void setAge(int age){
@@ -58,15 +60,13 @@ public abstract class Pet {
     public void setId(int id){
         if (id >= 1000) {
             this.id = id;
-        } else {
-            this.id = nextId++;
         }
     }
 
     //Attendance
     public void checkIn(int dayIndex) {
         if (Utilities.validRange(dayIndex, 0, 6)) {
-            daysAttending[dayIndex] = false;
+            daysAttending[dayIndex] = true;
         }
     }
 
@@ -109,12 +109,10 @@ public abstract class Pet {
     //toString
     @Override
     public String toString() {
-        return "Pet{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", owner=" + owner +
-                ", daysAttending=" + numOfDaysAttending() +
-                '}';
+        return name +
+                " age: " + age +
+                ", days attending: " + getDaysString() +
+                ", Owner: ["+ owner.toString() + "]";
+
     }
 }

@@ -4,7 +4,7 @@ import utils.DogBreedUtility;
 
 public class Dog extends Mammal {
 
-    private String breed = "";
+    private String breed ="";
     private boolean dangerousBreed;
 
     public static final float DANGEROUS_DAILY_RATE = 40;
@@ -20,9 +20,7 @@ public class Dog extends Mammal {
         super(name, age, owner, id, sex, vaccinated, weight, neutered);
 
         // Constructor → validation applied
-        if (DogBreedUtility.checkBreed(breed)) {
-            this.breed = breed;
-        }
+        setBreed(breed);
 
         this.dangerousBreed = dangerousBreed;
     }
@@ -42,14 +40,21 @@ public class Dog extends Mammal {
     // Setters (validate only)
     // -------------------------
     public void setBreed(String breed) {
-        if (DogBreedUtility.checkBreed(breed)) {
-            this.breed = breed;
+        if (breed == null) return;
+
+        String mapped = DogBreedUtility.mapBreed(breed);
+
+        if (DogBreedUtility.checkBreed(mapped)) {
+            this.breed = DogBreedUtility.formatBreed(mapped);
         }
     }
 
     public void setDangerousBreed(boolean dangerousBreed) {
         this.dangerousBreed = dangerousBreed;
     }
+
+
+
 
     // -------------------------
     // Business Logic
@@ -60,13 +65,25 @@ public class Dog extends Mammal {
         return rate * numOfDaysAttending();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Dog other = (Dog) obj;
+
+        return this.breed.equalsIgnoreCase(other.breed) &&
+                this.dangerousBreed == other.dangerousBreed;
+    }
+
     // -------------------------
     // toString
     // -------------------------
     @Override
     public String toString() {
-        return super.toString() +
-                ", breed=" + breed +
-                ", dangerousBreed=" + dangerousBreed;
+        return "[Dog] " + super.toString() +
+                ", Breed: " + breed +
+                ", dangerous: " + (dangerousBreed ? "Yes" : "No") +
+                ", Weekly Fee: " + calculateWeeklyFee();
     }
 }

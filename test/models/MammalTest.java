@@ -195,4 +195,6 @@ class MammalTest {
         assertTrue(result.contains("vaccinated: No"));
         assertTrue(result.contains("neutered: Yes"));
     }
+
+
 }

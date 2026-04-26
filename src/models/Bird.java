@@ -14,12 +14,8 @@ public abstract class Bird extends Pet {
                 double wingSpan, boolean canFly) {
 
         super(name, age, owner, id);
-
-        if (Utilities.validRange(wingSpan, 3, 400)) {
-            this.wingSpan = wingSpan;
-        }
-
-        this.canFly = canFly;
+        setWingSpan(wingSpan);
+        setCanFly(canFly);
     }
 
     // -------------------------
@@ -37,7 +33,7 @@ public abstract class Bird extends Pet {
     // Setters (validate only)
     // -------------------------
     public void setWingSpan(double wingSpan) {
-        if (Utilities.validRange(wingSpan, 3, 400)) {
+        if (Utilities.validRange(wingSpan, 0, 400)) {
             this.wingSpan = wingSpan;
         }
     }
@@ -46,13 +42,24 @@ public abstract class Bird extends Pet {
         this.canFly = canFly;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Bird other = (Bird) obj;
+
+        return Double.compare(this.wingSpan, other.wingSpan) == 0 &&
+                this.canFly == other.canFly;
+    }
+
     // -------------------------
     // toString
     // -------------------------
     @Override
     public String toString() {
-        return super.toString() +
-                ", wingSpan=" + wingSpan +
-                ", canFly=" + canFly;
+        return "Bird: " + super.toString() +
+                ", WingSpan: " + wingSpan +
+                ", canFly: " + (canFly ? "Yes" : "No");
     }
 }

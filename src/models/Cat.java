@@ -71,7 +71,8 @@ public class Cat extends Mammal {
     @Override
     public String toString() {
         return super.toString() +
-                ", indoorCat=" + indoorCat +
-                ", favouriteToy=" + favouriteToy;
+                ", indoorCat: " + indoorCat +
+                ", favouriteToy: " + favouriteToy +
+                ", Weekly Fee: " + calculateWeeklyFee();
     }
 }
