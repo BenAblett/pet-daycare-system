@@ -16,9 +16,6 @@ public class BirdUtility {
      */
     private static final TreeMap<Integer, String> vocabularyLevels = new TreeMap<>();
 
-    /**
-     * Static initialiser block that populates the vocabulary level map.
-     */
     static {
         vocabularyLevels.put(0, "Minimal");
         vocabularyLevels.put(5, "Basic");

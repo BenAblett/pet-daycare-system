@@ -8,7 +8,7 @@ public class CatToyUtility {
     // Create a HashMap where the key is the toy name (uppercase)
     // and the value is a description or recommended age
 
-    private static Map<String, String> catToys = new HashMap<>(){{
+    private static final Map<String, String> catToys = new HashMap<>(){{
         put("FEATHER WAND", "Interactive toy for all ages");
         put("LASER POINTER", "Supervised play only");
         put("BALL OF YARN", "Suitable for kittens");
@@ -18,6 +18,7 @@ public class CatToyUtility {
         put("TUNNEL", "Fun for hiding and running");  }};
 
 
+    @SuppressWarnings("StringConcatenationInLoop")
     static public String getCatToys() {
         // Display all toys with info
         String info = "Cat Toys and Info:";

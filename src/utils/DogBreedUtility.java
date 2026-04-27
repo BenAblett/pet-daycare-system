@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class DogBreedUtility {
 
-    private static  Set<String> dogBreeds = new HashSet<>();
+    private static final Set<String> dogBreeds = new HashSet<>();
      static {
          // Add breeds
          dogBreeds.add("LABRADOR RETRIEVER");
@@ -34,6 +34,7 @@ public class DogBreedUtility {
 
         return b;
     }
+    @SuppressWarnings("EnhancedSwitchMigration")
     public static String formatBreed(String breed) {
         switch (breed) {
             case "LABRADOR RETRIEVER":
