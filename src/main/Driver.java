@@ -66,7 +66,6 @@ public class Driver {
     // =========================
     private void petMenu() {
         int option;
-        int Valid;
         do {
             System.out.println("""
                     ---------Pet Menu---------
@@ -81,27 +80,30 @@ public class Driver {
 
             option = ScannerInput.readNextInt("Select: ");
 
+            //noinspection SwitchStatementWithoutDefaultBranch
             switch (option) {
                 case 1 -> addPet();
                 case 2 -> updatePet();
                 case 3 -> System.out.println(api.listAllPets());
                 case 4 -> {
-                    do {
-                        Valid = 1;
-
-                        int id = ScannerInput.readNextInt("Enter ID: ");
-                        api.deletePetById(id);
-                        if (api.deletePetById(id) != null) Valid = 0;
-                    } while (Valid == 1);
+                    int id = ScannerInput.readNextInt("Enter ID: ");
+                    api.deletePetById(id);
+                    if (api.deletePetById(id) != null) {
+                        System.out.println("Pet Deleted from System Successfully");
+                    } else {
+                        System.out.println("Pet was not Deleted from System Successfully");
+                    }
                 }
                 case 5 -> {
-                    do {
-                        Valid = 1;
-                        int index = ScannerInput.readNextInt("Enter Index: ");
-                        api.deletePetByIndex(index);
-                        if (api.deletePetByIndex(index) != null) Valid = 0;
-                    } while (Valid == 1);
+                    int index = ScannerInput.readNextInt("Enter Index: ");
+                    api.deletePetByIndex(index);
+                    if (api.deletePetByIndex(index) != null) {
+                        System.out.println("Pet Deleted from System Successfully");
+                    } else {
+                        System.out.println("Pet was not Deleted from System Successfully");
+                    }
                 }
+
             }
         }while (option != 0) ;
     }
@@ -323,6 +325,9 @@ public class Driver {
             }
         }
     }
+
+
+
     //-----------------------------------------------------------------
     //  Private methods for Counting facility
     //-----------------------------------------------------------------
