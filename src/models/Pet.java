@@ -4,6 +4,7 @@ import utils.Utilities;
 
 public abstract class Pet {
 
+    private static int nextId = 1000;
     private int id = 1000;
     private String name;
     private Owner owner;
@@ -109,6 +110,7 @@ public abstract class Pet {
     @Override
     public String toString() {
         return name +
+                ", id: " + id +
                 " age: " + age +
                 ", days attending: " + getDaysString() +
                 ", Owner: ["+ owner.toString() + "]";

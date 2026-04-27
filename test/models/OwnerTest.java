@@ -62,14 +62,14 @@ class OwnerTest {
         Owner o3 = new Owner(101, "John", "0871111111");
         assertNotEquals(o1, o3);
 
-        assertNotEquals(o1, null);
-        assertNotEquals(o1, new Object());
+        assertNotEquals(null, o1);
+        assertNotEquals(new Object(), o1);
     }
 
     @Test
     void testEqualsSameReference() {
         // covers the `this == o` → true branch (line 1 of equals)
-        assertTrue(validOwner.equals(validOwner));
+        assertEquals(validOwner, validOwner);
     }
 
     @Test

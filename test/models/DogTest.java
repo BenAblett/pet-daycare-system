@@ -75,10 +75,10 @@ class DogTest {
     @Test
     void testEqualsFirstLine() {
         // o == null branch
-        assertFalse(dog.equals(null));
+        assertNotEquals(null, dog);
 
         // getClass() != o.getClass() branch
-        assertFalse(dog.equals(owner));
+        assertNotEquals(dog, owner);
     }
 
     @Test

@@ -9,8 +9,6 @@ import utils.ScannerInput;
 import java.io.File;
 
 public class Driver {
-    //TODO Define  objects of the PetDayCareAPI and OwnerAPI here.  They  should be declared private.
-    // And other fields as per spec
     private final PetsDayCareAPI api;
     private final OwnerAPI ownerAPI;
 
@@ -22,15 +20,6 @@ public class Driver {
     public static void main(String[] args) {
         new Driver().runMenu();
     }
-
-    //TODO Refer to the tutors instructions for building this class and for the menu.  You are free to deviate in any way
-    //     from the Driver menu that is in the tutors instructions, once you have these included:
-    //     (with tests still compiling)
-    //       - CRUD on PetDayCare
-    //       - Search facility (for Pets and Owners)
-    //       - Reports
-    //       - Persistence
-    // Note:  This is the ONLY class that can talk to the user i.e. have System.out.print and Scanner reads in it.
 
     //----------------------------------------------------------------------------
     // Private methods for displaying the menu and processing the selected options
@@ -129,9 +118,9 @@ public class Driver {
 
         String name = ScannerInput.readNextLine("Name: ");
         int age = ScannerInput.readNextInt("Age: ");
-
+        int id = ScannerInput.readNextInt("ID: ");
         // -------------------------
-        // OWNER HANDLING (IMPORTANT)
+        // OWNER HANDLING
         // -------------------------
         String ownerName = ScannerInput.readNextLine("Owner name: ");
 
@@ -170,13 +159,13 @@ public class Driver {
             case 1 -> { // DOG
                 char sex = ScannerInput.readNextChar("Sex (M/F): ");
                 boolean vaccinated = ScannerInput.readNextBoolean("Vaccinated (y/n): ");
-                double weight = ScannerInput.readNextDouble("Weight: ");
+                double weight = ScannerInput.readNextDouble("Weight (kg): ");
                 boolean neutered = ScannerInput.readNextBoolean("Neutered (y/n): ");
 
                 String breed = ScannerInput.readNextLine("Breed: ");
                 boolean dangerous = ScannerInput.readNextBoolean("Dangerous (y/n): ");
 
-                pet = new Dog(name, age, owner, 0,
+                pet = new Dog(name, age, owner, id,
                         sex, vaccinated, weight, neutered,
                         breed, dangerous);
             }
@@ -186,24 +175,29 @@ public class Driver {
 
                 char sex = ScannerInput.readNextChar("Sex (M/F): ");
                 boolean vaccinated = ScannerInput.readNextBoolean("Vaccinated (y/n): ");
-                double weight = ScannerInput.readNextDouble("Weight: ");
+                double weight = ScannerInput.readNextDouble("Weight (kg): ");
                 boolean neutered = ScannerInput.readNextBoolean("Neutered (y/n): ");
 
                 String toy = ScannerInput.readNextLine("Favourite toy: ");
                 boolean indoor = ScannerInput.readNextBoolean("Indoor (y/n): ");
 
-                pet = new Cat(name, age, owner, 0,
+                pet = new Cat(name, age, owner, id,
                         sex, vaccinated, weight, neutered,
                         indoor, toy);
             }
 
             case 3 -> { // PARROT
+                char sex = ScannerInput.readNextChar("Sex (M/F): ");
+                boolean vaccinated = ScannerInput.readNextBoolean("Vaccinated (y/n): ");
+                double weight = ScannerInput.readNextDouble("Weight (kg): ");
+                boolean neutered = ScannerInput.readNextBoolean("Neutered (y/n): ");
+
                 double wingSpan = ScannerInput.readNextDouble("Wing span: ");
                 boolean canFly = ScannerInput.readNextBoolean("Can fly (y/n): ");
 
                 int vocab = ScannerInput.readNextInt("Vocabulary size: ");
 
-                pet = new Parrot(name, age, owner, 0,
+                pet = new Parrot(name, age, owner, id, sex, vaccinated, weight, neutered,
                         wingSpan, canFly, vocab);
             }
 
@@ -300,13 +294,18 @@ public class Driver {
                     indoor, toy);
         } else if (existing instanceof Parrot) {
 
+            char sex = ScannerInput.readNextChar("Sex (M/F): ");
+            boolean vaccinated = ScannerInput.readNextLine("Vaccinated (y/n): ").equalsIgnoreCase("y");
+            double weight = ScannerInput.readNextDouble("Weight: ");
+            boolean neutered = ScannerInput.readNextLine("Neutered (y/n): ").equalsIgnoreCase("y");
+
             double wingSpan = ScannerInput.readNextDouble("Wing span: ");
             boolean canFly = ScannerInput.readNextLine("Can fly (y/n): ").equalsIgnoreCase("y");
 
             int vocab = ScannerInput.readNextInt("Vocabulary size: ");
 
             updated = new Parrot(name, age, owner,
-                    existing.getId(),
+                    existing.getId(), sex, vaccinated, weight, neutered,
                     wingSpan, canFly, vocab);
         }
 
@@ -510,19 +509,21 @@ public class Driver {
     private void save() {
         try {
             api.save();
+            ownerAPI.save();
             System.out.println("Saved successfully");
         } catch (Exception e) {
             System.out.println("Error saving");
         }
     }
 
-private void load() {
-    try {
-        api.load();
-        System.out.println("Loaded successfully");
-    } catch (Exception e) {
-        System.out.println("Error loading");
+    private void load() {
+        try {
+            api.load();
+            ownerAPI.save();
+            System.out.println("Loaded successfully");
+        } catch (Exception e) {
+            System.out.println("Error loading");
+        }
     }
-}
 
 }

@@ -13,7 +13,7 @@ class BirdTest {
     @BeforeEach
     void setUp() {
         owner = new Owner(1234, "Jane Doe", "87654321");
-        bird = new Parrot("Tweety", 2, owner, 100, 0.5, true, 0);
+        bird = new Parrot("Tweety", 2, owner, 100, 'M', true,  2,  true, 0.5, true, 20);
     }
 
     // --- Constructor & Getters ---
@@ -23,6 +23,8 @@ class BirdTest {
         assertEquals(0.5, bird.getWingSpan());
         assertTrue(bird.isCanFly());
     }
+
+
 
     // --- Setters ---
 
@@ -38,6 +40,7 @@ class BirdTest {
         assertFalse(bird.isCanFly());
     }
 
+
     // --- equals() ---
 
     @Test
@@ -51,19 +54,19 @@ class BirdTest {
 
     @Test
     void testEqualsSameFields() {
-        Parrot sameBird = new Parrot("Polly", 5, owner, 200, 0.5, true, 20);
+        Parrot sameBird = new Parrot("Polly", 5, owner, 200, 'M', true, 2, true, 0.5, true, 20);
         assertEquals(bird, sameBird);
     }
 
     @Test
     void testEqualsDifferentWingSpan() {
-        Parrot differentWingSpan = new Parrot("Tweety", 2, owner, 100, 1.0, true, 20);
+        Parrot differentWingSpan = new Parrot("Tweety", 2, owner, 100, 'M', true, 5,  true, 1, true, 20);
         assertNotEquals(bird, differentWingSpan);
     }
 
     @Test
     void testEqualsDifferentCanFly() {
-        Parrot differentCanFly = new Parrot("Tweety", 2, owner, 100, 0.5, false, 20);
+        Parrot differentCanFly = new Parrot("Tweety", 2, owner, 100, 'F',false,2,false,0.5, false, 20);
         assertNotEquals(bird, differentCanFly);
     }
 

@@ -2,7 +2,6 @@ package utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class CatToyUtility {
 
@@ -23,7 +22,7 @@ public class CatToyUtility {
         // Display all toys with info
         String info = "Cat Toys and Info:";
         for (Map.Entry<String, String> entry : catToys.entrySet()) {
-            info += "- " + entry.getKey() + " | Info: " + entry.getValue();
+            info += "- " + entry.getKey() + " | Info: " + entry.getValue() + "\n";
         }
         return info;
     }

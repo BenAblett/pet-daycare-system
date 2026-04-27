@@ -1,0 +1,29 @@
+<object-stream>
+  <list>
+    <models.Dog>
+      <id>1000</id>
+      <name>Bob</name>
+      <owner>
+        <id>100</id>
+        <name>Eion Selwood</name>
+        <phoneNumber>0860442014</phoneNumber>
+      </owner>
+      <daysAttending>
+        <boolean>true</boolean>
+        <boolean>false</boolean>
+        <boolean>false</boolean>
+        <boolean>true</boolean>
+        <boolean>false</boolean>
+        <boolean>true</boolean>
+        <boolean>false</boolean>
+      </daysAttending>
+      <age>2</age>
+      <sex>F</sex>
+      <vaccinated>true</vaccinated>
+      <weight>180.0</weight>
+      <neutered>true</neutered>
+      <breed>Labrador</breed>
+      <dangerousBreed>true</dangerousBreed>
+    </models.Dog>
+  </list>
+</object-stream>

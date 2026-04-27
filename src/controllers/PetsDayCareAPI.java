@@ -1,4 +1,3 @@
- //TODO - Uncomment when you are ready to go
 
 package controllers;
 
@@ -27,17 +26,15 @@ package controllers;
      public PetsDayCareAPI(String name, int maxNumberOfPets, File file) {
          this.pets = new ArrayList<>();
 
-         setName(name);
+         // truncate to 10 chars on creation
+         if (name != null) {
+             this.name = Utilities.truncateString(name, 10);
+             }
 
          setMaxNumberOfPets(maxNumberOfPets);
 
          this.file = file;
      }
-
-     // -------------------------
-     // ID GENERATION
-     // -------------------------
-
 
      //-------------------------------------
      //  Setters/Getters
@@ -55,8 +52,8 @@ package controllers;
      }
 
      public void setName(String name) {
-         if (name != null) {
-             this.name = Utilities.truncateString(name, 20);
+         if (name != null && name.length() <= 10) {
+             this.name = name;
          }
      }
 
@@ -80,6 +77,7 @@ package controllers;
      //  Pet ARRAYLIST CRUD
      //-------------------------------------
      public boolean addPet(Pet pet) {
+         if (pet == null) return false;
          if (pets.size() >= maxNumberOfPets) return false;
          return pets.add(pet);
      }
@@ -130,11 +128,6 @@ package controllers;
      //-------------------------------------
      //  Pet ARRAYLIST - Utility methods
      //-------------------------------------
-     // e.g validation methods
-     //TODO Add a method isValidIndex(int) which returns an boolean -
-     //      - returns true if the index is valid for the pets arrayList (in range)
-     //      - returns false otherwise
-     //      As this method is used inside this class, it should be private
      private boolean isValidPetIndex(int index) {
          return index >= 0 && index < pets.size();
      }
@@ -174,6 +167,10 @@ package controllers;
 
              else if (existing instanceof Parrot e && updated instanceof Parrot u) {
 
+                 e.setSex(u.getSex());
+                 e.setVaccinated(u.isVaccinated());
+                 e.setWeight(u.getWeight());
+                 e.setNeutered(u.isNeutered());
                  e.setWingSpan(u.getWingSpan());
                  e.setCanFly(u.isCanFly());
                  e.setVocabularySize(u.getVocabularyLevel());
@@ -480,11 +477,13 @@ package controllers;
      // TOD Add all the find methods
 
      public Pet findDogByOwnerAndBreedAndAge(String name, String breed, int age) {
+         if (name == null || breed == null) return null;
+
          for (Pet p : pets) {
              if (p instanceof Dog d) {
 
                  if (d.getOwner().getName().equalsIgnoreCase(name) &&
-                         d.getBreed().equalsIgnoreCase(breed) &&
+                         d.getBreed().toLowerCase().contains(breed.toLowerCase()) &&
                          d.getAge() == age) {
 
                      return d;

@@ -14,7 +14,7 @@ public class BirdUtility {
      * A map that stores vocabulary thresholds and their corresponding labels.
      * The key represents the minimum number of words for that level.
      */
-    private static TreeMap<Integer, String> vocabularyLevels = new TreeMap<>();
+    private static final TreeMap<Integer, String> vocabularyLevels = new TreeMap<>();
 
     /**
      * Static initialiser block that populates the vocabulary level map.

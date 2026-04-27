@@ -19,7 +19,7 @@ public class Cat extends Mammal {
 
         this.indoorCat = indoorCat;
 
-        // Validation (case-insensitive fix)
+        // Validation
         if (favouriteToy != null &&
                 CatToyUtility.isCatToy(favouriteToy.toUpperCase())) {
             this.favouriteToy = favouriteToy;
@@ -65,13 +65,24 @@ public class Cat extends Mammal {
         return rate * numOfDaysAttending();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Cat other = (Cat) obj;
+
+        return this.isIndoorCat() == other.isIndoorCat() &&
+                this.getFavouriteToy().equalsIgnoreCase(other.getFavouriteToy());
+    }
+
     // -------------------------
     // toString
     // -------------------------
     @Override
     public String toString() {
-        return super.toString() +
-                ", indoorCat: " + indoorCat +
+        return "[Cat] " + super.toString() +
+                ", indoor: " + (indoorCat ? "Yes" : "No") +
                 ", favouriteToy: " + favouriteToy +
                 ", Weekly Fee: " + calculateWeeklyFee();
     }

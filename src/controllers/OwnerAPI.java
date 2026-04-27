@@ -17,7 +17,7 @@ public class OwnerAPI implements ISerializer {
 
     private List<Owner> ownerList = new ArrayList<>();
 
-    private File file;
+    private final File file;
 
     public OwnerAPI(File file)  {
         this.file = file;
@@ -54,18 +54,20 @@ public class OwnerAPI implements ISerializer {
     }
 
 
+    @SuppressWarnings("StringConcatenationInLoop")
     public String listOwners(){
         String listOwners = "";
         for (Owner ow : ownerList){
             listOwners += ownerList.indexOf(ow) + ": " + ow + "\n";
         }
-        if (listOwners.equals("")){
+        if (listOwners.isEmpty()){ //Replaced with is Empty
             return "No Owners Found";
         }
         else {
             return listOwners;
         }
     }
+    @SuppressWarnings("StringConcatenationInLoop")
     public String listOwnersStartsWith(String prefix){
         String listOwners = "";
         for (Owner ow : ownerList){
@@ -73,7 +75,7 @@ public class OwnerAPI implements ISerializer {
                 listOwners += ownerList.indexOf(ow) + ": " + ow + "\n";
             }}
 
-        if (listOwners.equals("")){
+        if (listOwners.isEmpty()){
             return "No Owners Found";
         }
         else {
@@ -163,8 +165,9 @@ public class OwnerAPI implements ISerializer {
     }
 
 
+    @SuppressWarnings({"deprecation", "unchecked"})
     public void load() throws Exception {
-        //list of classes that you wish to include in the serialisation, separated by a comma
+        //list of classes that you wish to include in the serialization, separated by a comma
         Class<?>[] classes = new Class[]{ Owner.class};
 
         //setting up the xstream object with default security and the above classes
@@ -172,7 +175,7 @@ public class OwnerAPI implements ISerializer {
         XStream.setupDefaultSecurity(xstream);
         xstream.allowTypes(classes);
 
-        //doing the actual serialisation to an XML file
+        //doing the actual serialization to an XML file
         ObjectInputStream in = xstream.createObjectInputStream(new FileReader(file));
         ownerList = (List<Owner>) in.readObject();
         in.close();
