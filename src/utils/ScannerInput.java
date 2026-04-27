@@ -84,14 +84,72 @@ public class ScannerInput {
     public static boolean readNextBoolean(String prompt) {
         do {
             Scanner scanner = new Scanner(System.in);
-            System.out.print(prompt + " (true/false): ");
+            System.out.print(prompt + " (yes/no): ");
             String input = scanner.next().toLowerCase();
 
-            if (input.equals("true") || input.equals("t")) return true;
-            if (input.equals("false") || input.equals("f")) return false;
+            if (input.equals("yes") || input.equals("y")) return true;
+            if (input.equals("no") || input.equals("n")) return false;
 
             System.err.println("\tEnter true or false please.");
         } while (true);
+    }
+
+    private int readIntInRange(String prompt, int min, int max) {
+        int value;
+        do {
+            value = ScannerInput.readNextInt(prompt);
+            if (value < min || value > max) {
+                System.out.println("Invalid input. Enter a number between " + min + " and " + max);
+            }
+        } while (value < min || value > max);
+        return value;
+    }
+
+    private String readNonEmptyString(String prompt) {
+        String input;
+        do {
+            input = ScannerInput.readNextLine(prompt);
+            if (input.trim().isEmpty()) {
+                System.out.println("Input cannot be empty.");
+            }
+        } while (input.trim().isEmpty());
+        return input;
+    }
+
+    private boolean readYesNo(String prompt) {
+        String input;
+        do {
+            input = ScannerInput.readNextLine(prompt + " (y/n): ").toLowerCase();
+            if (!input.equals("y") && !input.equals("n")) {
+                System.out.println("Enter y or n only.");
+            }
+        } while (!input.equals("y") && !input.equals("n"));
+
+        return input.equals("y");
+    }
+
+    private char readSex(String prompt) {
+        char c;
+        do {
+            c = Character.toUpperCase(ScannerInput.readNextChar(prompt));
+            if (c != 'M' && c != 'F') {
+                System.out.println("Enter M or F only.");
+            }
+        } while (c != 'M' && c != 'F');
+
+        return c;
+    }
+
+    private double readPositiveDouble(String prompt) {
+        double value;
+        do {
+            value = ScannerInput.readNextDouble(prompt);
+            if (value < 0) {
+                System.out.println("Value must be >= 0.");
+            }
+        } while (value < 0);
+
+        return value;
     }
 
 }

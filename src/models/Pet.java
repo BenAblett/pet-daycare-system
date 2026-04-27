@@ -4,7 +4,7 @@ import utils.Utilities;
 
 public abstract class Pet {
 
-    private int id;
+    private int id = 1000;
     private String name;
     private Owner owner;
     private boolean[] daysAttending = {false,false,false,false,false,false,false};
@@ -83,6 +83,7 @@ public abstract class Pet {
     }
 
     //Helper
+    @SuppressWarnings("StringConcatenationInLoop")
     private String getDaysString() {
         String[] dayNames = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 

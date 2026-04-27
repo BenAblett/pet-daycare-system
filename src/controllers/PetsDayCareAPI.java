@@ -13,17 +13,17 @@ package controllers;
 
 
 
+ @SuppressWarnings({"StringConcatenationInLoop", "deprecation", "unchecked"})
  public class PetsDayCareAPI implements ISerializer {
 
      private ArrayList<Pet> pets;
      private String name;
      private int maxNumberOfPets;
-     private File file;
+     private final File file;
 
      //-------------------------------------
      //  Constructor
      //-------------------------------------
-     //TODO array list of pets, should be empty at the start.
      public PetsDayCareAPI(String name, int maxNumberOfPets, File file) {
          this.pets = new ArrayList<>();
 
@@ -32,13 +32,12 @@ package controllers;
          setMaxNumberOfPets(maxNumberOfPets);
 
          this.file = file;
-
-         //TODO array list of pets, should be empty at the start.
-         //     When creating the PetsDayCare, truncate the name to 20 characters.
-         //     When updating an existing DayCare, only update the name if it is 10 characters or less.
-         //     number of pets must be must be >= 10 <= 100 default to 10
-         //     file  is the name of the file that you will load from / save to
      }
+
+     // -------------------------
+     // ID GENERATION
+     // -------------------------
+
 
      //-------------------------------------
      //  Setters/Getters
@@ -56,8 +55,8 @@ package controllers;
      }
 
      public void setName(String name) {
-         if (name != null && name.length() <= 10) {
-             this.name = name;
+         if (name != null) {
+             this.name = Utilities.truncateString(name, 20);
          }
      }
 
@@ -81,19 +80,22 @@ package controllers;
      //  Pet ARRAYLIST CRUD
      //-------------------------------------
      public boolean addPet(Pet pet) {
+         if (pets.size() >= maxNumberOfPets) return false;
          return pets.add(pet);
      }
 
-     public void deletePetByIndex(int index) {
+     public Pet deletePetByIndex(int index) {
          if (isValidPetIndex(index)) {
-             pets.remove(index);
+            return pets.remove(index);
          }
+         return null;
      }
 
      public Pet deletePetById(int id) {
-         for (int i = 0; i < pets.size(); i++) {
-             if (pets.get(i).getId() == id) {
-                 return pets.remove(i);
+         for (Pet pet : pets) {
+             if (pet.getId() == id) {
+                 pets.remove(pet);
+                 return pet;
              }
          }
          return null;
@@ -137,33 +139,50 @@ package controllers;
          return index >= 0 && index < pets.size();
      }
 
-     public Pet updatePet(int index, Pet updatedPet) {
-         if (isValidPetIndex(index) && updatedPet != null) {
-             return pets.set(index, updatedPet);
+     public boolean updatePet(int index, Pet updated) {
+
+         Pet existing = getPet(index);
+
+         if (existing != null && updated != null) {
+
+             // -------- COMMON FIELDS --------
+             existing.setName(updated.getName());
+             existing.setAge(updated.getAge());
+             existing.setOwner(updated.getOwner());
+             existing.setDaysAttending(updated.getDaysAttending());
+
+             // -------- TYPE-SPECIFIC --------
+             if (existing instanceof Dog e && updated instanceof Dog u) {
+
+                 e.setSex(u.getSex());
+                 e.setVaccinated(u.isVaccinated());
+                 e.setWeight(u.getWeight());
+                 e.setNeutered(u.isNeutered());
+                 e.setBreed(u.getBreed());
+                 e.setDangerousBreed(u.isDangerousBreed());
+             }
+
+             else if (existing instanceof Cat e && updated instanceof Cat u) {
+
+                 e.setSex(u.getSex());
+                 e.setVaccinated(u.isVaccinated());
+                 e.setWeight(u.getWeight());
+                 e.setNeutered(u.isNeutered());
+                 e.setFavouriteToy(u.getFavouriteToy());
+                 e.setIndoorCat(u.isIndoorCat());
+             }
+
+             else if (existing instanceof Parrot e && updated instanceof Parrot u) {
+
+                 e.setWingSpan(u.getWingSpan());
+                 e.setCanFly(u.isCanFly());
+                 e.setVocabularySize(u.getVocabularyLevel());
+             }
+
+             return true;
          }
-         return null;
-     }
 
-     public double getWeeklyIncome() {
-         double total = 0;
-
-         for (Pet p : pets) {
-             total += p.calculateWeeklyFee();
-         }
-
-         return total;
-     }
-
-     public int getAverageNumDaysPerWeek() {
-         if (pets.isEmpty()) return 0;
-
-         int totalDays = 0;
-
-         for (Pet p : pets) {
-             totalDays += p.numOfDaysAttending();
-         }
-
-         return totalDays / pets.size();
+         return false;
      }
 
      // Convert y/n inputs into boolean[]
@@ -182,49 +201,11 @@ package controllers;
          return days;
      }
 
-     // Optional: pretty print days (useful for toString/debugging)
-     public static String formatDays(boolean[] days) {
-         if (days == null) return "None";
-
-         String[] names = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
-         String result = "";
-
-         for (int i = 0; i < days.length; i++) {
-             if (days[i]) {
-                 result += names[i] + " ";
-             }
-         }
-
-         return result.isEmpty() ? "None" : result.trim();
-     }
-
-
-     // TODO  Add a method  getPet(int) which returns a Pet object:
-     //       - if the supplied index is valid, the Pet object at that location is returned
-     //       - if the supplied index is invalid, null is returned
-
-     //TODO  Add a method  getPet(String) which returns a Pet object:
-     //       - if the supplied name is found, the first Dog object with that name is returned
-     //       - if the supplied name is not found, null is returned
-
-
-     //TODO  Add a method  getPetById(int) which returns a Pet object:
-     //       - if the supplied id is found, the Pet object with that id is returned
-     //       - if the supplied id is not found, null is returned
-
-
      //------------------------------------
      // LISTING METHODS - Basic and Advanced
      //------------------------------------
-//TODO e.g. Add a method, listAllPets().  The return type is String.
-//     This method returns a list of the pets stored in the array list.
-//     Each pet should be on a new line and should be preceded by the index number e.g.
-//        0: pet 1 Details
-//        1: pet 2 Details
-//    If there are no pets stored in the array list, return a string that contains "There are no pets registered at the moment".
 
-//TODO +  and the remaining listing methods as per spec
-
+     @SuppressWarnings("StringConcatenationInLoop")
      public String listAllPets() {
          if (pets.isEmpty()) return "No Pets";
 
@@ -275,8 +256,7 @@ package controllers;
          String result = "";
 
          for (int i = 0; i < pets.size(); i++) {
-             if (pets.get(i) instanceof Dog) {
-                 Dog d = (Dog) pets.get(i);
+             if (pets.get(i) instanceof Dog d) {
                  if (d.isDangerousBreed()) {
                      result += i + ": " + d + "\n";
                  }
@@ -399,19 +379,28 @@ package controllers;
      //-------------------------------------
      //  Counting Methods
      //-------------------------------------
-     // TODO all the counting methods e.g.
-     //TODO Add a method, numberOfPets().  The return type is int.
-     //     This method returns the number of pets objects currently stored in the array list.
 
-     //TODO Add a method, numberOfDogs().  The return type is int.
-     //     This method returns the number of  dogs objects currently stored in the array list.
+     public double getWeeklyIncome() {
+         double total = 0;
 
+         for (Pet p : pets) {
+             total += p.calculateWeeklyFee();
+         }
 
-     //TODO Add a method, getWeeklyIncome().  The return type is double.
-     //     This method returns the amount received from all the pets per week.
+         return Utilities.toTwoDecimalPlaces(total);
+     }
 
-     //TODO Add a method, getAverageNumDaysPerWeek().  The return type is int.
-     //     This method returns the average number of days pets stay in the Day Care.
+     public int getAverageNumDaysPerWeek() {
+         if (pets.isEmpty()) return 0;
+
+         int totalDays = 0;
+
+         for (Pet p : pets) {
+             totalDays += p.numOfDaysAttending();
+         }
+
+         return totalDays / pets.size();
+     }
 
      public int numberOfPets() {
          return pets.size();
@@ -475,8 +464,7 @@ package controllers;
          int count = 0;
 
          for (Pet p : pets) {
-             if (p instanceof Parrot) {
-                 Parrot parrot = (Parrot) p;
+             if (p instanceof Parrot parrot) {
                  if (parrot.getVocabularySize().equalsIgnoreCase(vocabSize)) {
                      count++;
                  }
@@ -493,8 +481,7 @@ package controllers;
 
      public Pet findDogByOwnerAndBreedAndAge(String name, String breed, int age) {
          for (Pet p : pets) {
-             if (p instanceof Dog) {
-                 Dog d = (Dog) p;
+             if (p instanceof Dog d) {
 
                  if (d.getOwner().getName().equalsIgnoreCase(name) &&
                          d.getBreed().equalsIgnoreCase(breed) &&
@@ -540,14 +527,6 @@ package controllers;
          pets.set(j, temp);
      }
 
-     private void swapPets(Pet p1, Pet p2) {
-         int i = pets.indexOf(p1);
-         int j = pets.indexOf(p2);
-
-         if (i != -1 && j != -1) {
-             swapPets(i, j);
-         }
-     }
 
      public void sortPetsById() {
          for (int i = 0; i < pets.size(); i++) {
@@ -585,17 +564,8 @@ package controllers;
      //  Methods for Persistence
      // --------------------------------
 
-     //TODO Add a method, load().  The return type is void.
-     //    This method uses the XStream component to deserialise the Pets array list  from
-     //    an XML file into the Pets array list.
-
-
-     //TODO Add a method, save().  The return type is void.
-     //    This method uses the XStream component to serialise the Pets array list object  to
-     //    an XML file.
-
      public void load() throws Exception {
-         //list of classes that you wish to include in the serialisation, separated by a comma
+         //list of classes that you wish to include in the serialization, separated by a comma
          Class<?>[] classes = new Class[] {
                  models.Dog.class,
                  models.Cat.class,
@@ -609,7 +579,7 @@ package controllers;
          XStream.setupDefaultSecurity(xstream);
          xstream.allowTypes(classes);
 
-         //doing the actual serialisation to an XML file
+         //doing the actual serialization to an XML file
          ObjectInputStream is = xstream.createObjectInputStream(new FileReader(file));
          pets = (ArrayList<Pet>) is.readObject();
          is.close();

@@ -5,6 +5,7 @@ import utils.BirdUtility;
 public class Parrot extends Bird{
 
     private String vocabularySize = "Amazing";
+    private int vocabularyLevel;
 
     // -------------------------
     // Constructor
@@ -15,7 +16,7 @@ public class Parrot extends Bird{
         super(name, age, owner, id, wingSpan, canFly);
 
         // Convert int → String using utility
-        this.vocabularySize = BirdUtility.getVocabularyLevel(vocabularySize);
+        setVocabularySize(vocabularySize);
     }
 
     // -------------------------
@@ -24,12 +25,17 @@ public class Parrot extends Bird{
     public String getVocabularySize() {
         return vocabularySize;
     }
+    public int getVocabularyLevel() {
+        return vocabularyLevel;
+    }
+
 
     // -------------------------
     // Setter (convert int → String)
     // -------------------------
     public void setVocabularySize(int vocabularySize) {
         this.vocabularySize = BirdUtility.getVocabularyLevel(vocabularySize);
+        this.vocabularyLevel = vocabularySize; //Stores int value as well as transforming it
     }
 
     // -------------------------

@@ -1,5 +1,6 @@
 package main;
 
+import controllers.OwnerAPI;
 import controllers.PetsDayCareAPI;
 import models.*;
 import utils.CatToyUtility;
@@ -11,9 +12,11 @@ public class Driver {
     //TODO Define  objects of the PetDayCareAPI and OwnerAPI here.  They  should be declared private.
     // And other fields as per spec
     private final PetsDayCareAPI api;
+    private final OwnerAPI ownerAPI;
 
     public Driver() {
         api = new PetsDayCareAPI("PetCare", 50, new File("pets.xml"));
+        ownerAPI = new OwnerAPI(new File("owners.xml"));
     }
 
     public static void main(String[] args) {
@@ -45,8 +48,8 @@ public class Driver {
                     | 4. Sort Pets               |
                     | 5. Count pets              |
                     |----------------------------|
-                    | 5. Save                    |
-                    | 6. Load                    |
+                    | 6. Save                    |
+                    | 7. Load                    |
                     |----------------------------|
                     | 0. Exit                    |
                     ------------------------------
@@ -74,7 +77,7 @@ public class Driver {
     // =========================
     private void petMenu() {
         int option;
-
+        int Valid;
         do {
             System.out.println("""
                     ---------Pet Menu---------
@@ -94,38 +97,59 @@ public class Driver {
                 case 2 -> updatePet();
                 case 3 -> System.out.println(api.listAllPets());
                 case 4 -> {
-                    int id = ScannerInput.readNextInt("Enter ID: ");
-                    api.deletePetById(id);
+                    do {
+                        Valid = 1;
+
+                        int id = ScannerInput.readNextInt("Enter ID: ");
+                        api.deletePetById(id);
+                        if (api.deletePetById(id) != null) Valid = 0;
+                    } while (Valid == 1);
                 }
                 case 5 -> {
-                    int index = ScannerInput.readNextInt("Enter Index: ");
-                    api.deletePetByIndex(index);
+                    do {
+                        Valid = 1;
+                        int index = ScannerInput.readNextInt("Enter Index: ");
+                        api.deletePetByIndex(index);
+                        if (api.deletePetByIndex(index) != null) Valid = 0;
+                    } while (Valid == 1);
                 }
-
             }
-
-        } while (option != 0);
+        }while (option != 0) ;
     }
-
     //------------------------------------
     // Private methods for Adding Pets
     //------------------------------------
     private void addPet() {
 
         int type = ScannerInput.readNextInt("""
-        1) Dog
-        2) Cat
-        3) Parrot
-        Choose type:""");
+    1) Dog
+    2) Cat
+    3) Parrot
+    Choose type:""");
 
         String name = ScannerInput.readNextLine("Name: ");
         int age = ScannerInput.readNextInt("Age: ");
 
+        // -------------------------
+        // OWNER HANDLING (IMPORTANT)
+        // -------------------------
         String ownerName = ScannerInput.readNextLine("Owner name: ");
-        String phone = ScannerInput.readNextLine("Owner phone: ");
-        Owner owner = new Owner(0, ownerName, phone);
 
-        // collect stay input ()
+
+        Owner owner = ownerAPI.getOwnerByName(ownerName);
+
+        if (owner == null) {
+            String phone = ScannerInput.readNextLine("Owner phone: ");
+            owner = new Owner(0, ownerName, phone);
+            ownerAPI.addOwner(owner);
+            System.out.println("New owner created.");
+        } else {
+            System.out.println("Existing owner found.");
+        }
+
+        // -------------------------
+        // STAY INPUT
+        // -------------------------
         String[] inputs = new String[7];
         String[] days = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
 
@@ -138,16 +162,19 @@ public class Driver {
 
         Pet pet;
 
+        // -------------------------
+        // TYPE-SPECIFIC CREATION
+        // -------------------------
         switch (type) {
 
             case 1 -> { // DOG
                 char sex = ScannerInput.readNextChar("Sex (M/F): ");
-                boolean vaccinated = ScannerInput.readNextLine("Vaccinated (y/n): ").equalsIgnoreCase("y");
+                boolean vaccinated = ScannerInput.readNextBoolean("Vaccinated (y/n): ");
                 double weight = ScannerInput.readNextDouble("Weight: ");
-                boolean neutered = ScannerInput.readNextLine("Neutered (y/n): ").equalsIgnoreCase("y");
+                boolean neutered = ScannerInput.readNextBoolean("Neutered (y/n): ");
 
                 String breed = ScannerInput.readNextLine("Breed: ");
-                boolean dangerous = ScannerInput.readNextLine("Dangerous (y/n): ").equalsIgnoreCase("y");
+                boolean dangerous = ScannerInput.readNextBoolean("Dangerous (y/n): ");
 
                 pet = new Dog(name, age, owner, 0,
                         sex, vaccinated, weight, neutered,
@@ -158,12 +185,12 @@ public class Driver {
                 System.out.println(CatToyUtility.getCatToys());
 
                 char sex = ScannerInput.readNextChar("Sex (M/F): ");
-                boolean vaccinated = ScannerInput.readNextLine("Vaccinated (y/n): ").equalsIgnoreCase("y");
+                boolean vaccinated = ScannerInput.readNextBoolean("Vaccinated (y/n): ");
                 double weight = ScannerInput.readNextDouble("Weight: ");
-                boolean neutered = ScannerInput.readNextLine("Neutered (y/n): ").equalsIgnoreCase("y");
+                boolean neutered = ScannerInput.readNextBoolean("Neutered (y/n): ");
 
                 String toy = ScannerInput.readNextLine("Favourite toy: ");
-                boolean indoor = ScannerInput.readNextLine("Indoor (y/n): ").equalsIgnoreCase("y");
+                boolean indoor = ScannerInput.readNextBoolean("Indoor (y/n): ");
 
                 pet = new Cat(name, age, owner, 0,
                         sex, vaccinated, weight, neutered,
@@ -172,7 +199,7 @@ public class Driver {
 
             case 3 -> { // PARROT
                 double wingSpan = ScannerInput.readNextDouble("Wing span: ");
-                boolean canFly = ScannerInput.readNextLine("Can fly (y/n): ").equalsIgnoreCase("y");
+                boolean canFly = ScannerInput.readNextBoolean("Can fly (y/n): ");
 
                 int vocab = ScannerInput.readNextInt("Vocabulary size: ");
 
@@ -186,9 +213,18 @@ public class Driver {
             }
         }
 
-        pet.setDaysAttending(stay);   //
-        api.addPet(pet);              //
-        System.out.println("Pet added successfully.");
+        // -------------------------
+        // FINALISE
+        // -------------------------
+        pet.setDaysAttending(stay);
+
+        boolean added = api.addPet(pet);
+
+        if (added) {
+            System.out.println("Pet added successfully.");
+        } else {
+            System.out.println("Failed to add pet.");
+        }
     }
 
     //------------------------------------
@@ -206,14 +242,19 @@ public class Driver {
 
         System.out.println("Updating: " + existing);
 
+        // -------------------------
+        // COMMON INPUT
+        // -------------------------
         String name = ScannerInput.readNextLine("New name: ");
         int age = ScannerInput.readNextInt("New age: ");
 
-        Owner owner = existing.getOwner(); // keep same owner
+        String ownerName = ScannerInput.readNextLine("Owner name: ");
+        String phone = ScannerInput.readNextLine("Owner phone: ");
+        Owner owner = new Owner(0, ownerName, phone);
 
-        // 🔥 collect stay input
+        // Stay input
         String[] inputs = new String[7];
-        String[] days = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+        String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
         for (int i = 0; i < 7; i++) {
             inputs[i] = ScannerInput.readNextLine(
@@ -224,6 +265,9 @@ public class Driver {
 
         Pet updated = null;
 
+        // -------------------------
+        // TYPE-SPECIFIC CREATION
+        // -------------------------
         if (existing instanceof Dog) {
 
             char sex = ScannerInput.readNextChar("Sex (M/F): ");
@@ -235,12 +279,10 @@ public class Driver {
             boolean dangerous = ScannerInput.readNextLine("Dangerous (y/n): ").equalsIgnoreCase("y");
 
             updated = new Dog(name, age, owner,
-                    existing.getId(),   // 🔥 KEEP SAME ID
+                    existing.getId(),   // KEEP SAME ID
                     sex, vaccinated, weight, neutered,
                     breed, dangerous);
-        }
-
-        else if (existing instanceof Cat) {
+        } else if (existing instanceof Cat) {
 
             System.out.println(CatToyUtility.getCatToys());
 
@@ -256,9 +298,7 @@ public class Driver {
                     existing.getId(),
                     sex, vaccinated, weight, neutered,
                     indoor, toy);
-        }
-
-        else if (existing instanceof Parrot) {
+        } else if (existing instanceof Parrot) {
 
             double wingSpan = ScannerInput.readNextDouble("Wing span: ");
             boolean canFly = ScannerInput.readNextLine("Can fly (y/n): ").equalsIgnoreCase("y");
@@ -270,10 +310,18 @@ public class Driver {
                     wingSpan, canFly, vocab);
         }
 
+        // -------------------------
+        // FINAL UPDATE CALL
+        // -------------------------
         if (updated != null) {
-            updated.setDaysAttending(stay);   //
-            api.updatePet(index, updated);    //
-            System.out.println("Pet updated successfully.");
+            updated.setDaysAttending(stay);
+            boolean success = api.updatePet(index, updated);
+
+            if (success) {
+                System.out.println("Pet updated successfully.");
+            } else {
+                System.out.println("Update failed.");
+            }
         }
     }
     //-----------------------------------------------------------------
@@ -383,8 +431,11 @@ public class Driver {
                     | 6. List Indoor Cats              |
                     | 7. List dogs older than age      |
                     | 8. List cats by favourite toy    |
-                    | 9. Produce Weekly Income Report  |
-                    | 10.Show Average length of stay   |
+                    | 9. List Neutered Animals         |
+                    | 10.List Pets by Owner            |
+                    | 11.List Pets that Stay x Days    |
+                    | 12.Show weekly income            |
+                    | 13.Show Average length of stay   |
                     |----------------------------------|
                     | 0. Return to Main Menu           |
                     |----------------------------------|
@@ -406,15 +457,15 @@ public class Driver {
                         System.out.println(CatToyUtility.getCatToys());
                         String toy = ScannerInput.readNextLine("Enter favourite toy: ");
                         System.out.println(api.listAllCatsByFavouriteToy(toy));}
-                case 10 -> System.out.println(api.listAllNeuteredAnimals());
-                case 11 -> {
+                case 9 -> System.out.println(api.listAllNeuteredAnimals());
+                case 10 -> {
                     String name = ScannerInput.readNextLine("Enter Owner name: ");
                     System.out.println(api.listAllPetsByOwner(name));}
-                case 12 ->{
+                case 11 -> {
                         int days = ScannerInput.readNextInt("Enter Days Staying: ");
                         System.out.println(api.listAllPetsThatStayMoreThanDays(days));}
-                case 13 -> System.out.println("Weekly Income: " + api.getWeeklyIncome());
-                case 14 -> System.out.println("Average Days: " + api.getAverageNumDaysPerWeek());
+                case 12 -> System.out.println("Weekly Income: " + api.getWeeklyIncome());
+                case 13 -> System.out.println("Average Days: " + api.getAverageNumDaysPerWeek());
             }
 
         } while (option != 0);
@@ -444,7 +495,7 @@ public class Driver {
                     api.sortPetsById();
                     System.out.println("Sorted by ID");
                 }
-                case 12 -> {
+                case 2 -> {
                     api.sortPetsByName();
                     System.out.println("Sorted by Name");
                 }
