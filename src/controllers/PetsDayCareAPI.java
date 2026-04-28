@@ -513,18 +513,10 @@ package controllers;
                  : result.trim();
      }
 
-     //------------------------------
-     //  SEARCHING METHODS
-     //-------------------------------
-
-     // TODO Searching methods as per spec.
-
      //--------------------------------
      // Sorting methods
-     //
      //--------------------------------
-     //  Sorting methods as per spec .
-     // NOTE : THESE MUST BE WRITTEN WITHOUT THE USE OF THE SORT LIBRARY. If in doubt, just ask.
+
 
      private void swapPets(int i, int j) {
          Pet temp = pets.get(i);

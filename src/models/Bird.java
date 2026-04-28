@@ -4,7 +4,7 @@ import utils.Utilities;
 
 public abstract class Bird extends Pet {
 
-    private double wingSpan = 3;
+    private double wingSpan = 0;
     private boolean canFly = false;
     private char sex = 'U';          // default Unknown
     private boolean vaccinated = false;
