@@ -87,20 +87,22 @@ public class Driver {
                 case 3 -> System.out.println(api.listAllPets());
                 case 4 -> {
                     int id = ScannerInput.readNextInt("Enter ID: ");
-                    api.deletePetById(id);
-                    if (api.deletePetById(id) != null) {
+                    Pet deleted = api.deletePetById(id);
+
+                    if (deleted != null) {
                         System.out.println("Pet Deleted from System Successfully");
                     } else {
-                        System.out.println("Pet was not Deleted from System Successfully");
+                        System.out.println("Pet not Found");
                     }
                 }
                 case 5 -> {
                     int index = ScannerInput.readNextInt("Enter Index: ");
-                    api.deletePetByIndex(index);
-                    if (api.deletePetByIndex(index) != null) {
+                    Pet deleted = api.deletePetByIndex(index);
+
+                    if (deleted != null) {
                         System.out.println("Pet Deleted from System Successfully");
                     } else {
-                        System.out.println("Pet was not Deleted from System Successfully");
+                        System.out.println("Pet not Found");
                     }
                 }
 
@@ -145,8 +147,19 @@ public class Driver {
         String[] days = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
 
         for (int i = 0; i < 7; i++) {
-            inputs[i] = ScannerInput.readNextLine(
-                    "Stay on " + days[i] + "? (y/n): ");
+            String input;
+
+            do {
+                input = ScannerInput.readNextLine(
+                        "Stay on " + days[i] + "? (y/n): ").trim().toLowerCase();
+
+                if (!input.equals("y") && !input.equals("n")) {
+                    System.out.println("Invalid input. Please enter 'y' or 'n'.");
+                }
+
+            } while (!input.equals("y") && !input.equals("n"));
+
+            inputs[i] = input;
         }
 
         boolean[] stay = PetsDayCareAPI.buildStayDays(inputs);
@@ -524,7 +537,7 @@ public class Driver {
     private void load() {
         try {
             api.load();
-            ownerAPI.save();
+            ownerAPI.load();
             System.out.println("Loaded successfully");
         } catch (Exception e) {
             System.out.println("Error loading");

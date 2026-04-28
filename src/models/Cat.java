@@ -2,6 +2,7 @@ package models;
 
 
 import utils.CatToyUtility;
+import utils.Utilities;
 
 public class Cat extends Mammal {
 
@@ -84,6 +85,6 @@ public class Cat extends Mammal {
         return "[Cat] " + super.toString() +
                 ", indoor: " + (indoorCat ? "Yes" : "No") +
                 ", favouriteToy: " + favouriteToy +
-                ", Weekly Fee: " + calculateWeeklyFee();
+                ", Weekly Fee: " + Utilities.toTwoDecimalPlaces(calculateWeeklyFee());
     }
 }

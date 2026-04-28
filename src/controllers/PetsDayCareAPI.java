@@ -69,16 +69,14 @@ package controllers;
          }
      }
 
-
-     //TODO Add a getter and setter for each field, that adheres to the  validation rules as per spec
-
-
      //-------------------------------------
      //  Pet ARRAYLIST CRUD
      //-------------------------------------
      public boolean addPet(Pet pet) {
          if (pet == null) return false;
          if (pets.size() >= maxNumberOfPets) return false;
+         if (petExists(pet.getId())) return false;
+
          return pets.add(pet);
      }
 
@@ -90,10 +88,9 @@ package controllers;
      }
 
      public Pet deletePetById(int id) {
-         for (Pet pet : pets) {
-             if (pet.getId() == id) {
-                 pets.remove(pet);
-                 return pet;
+         for (int i = 0; i < pets.size(); i++) {
+             if (pets.get(i).getId() == id) {
+                 return pets.remove(i);
              }
          }
          return null;
@@ -131,6 +128,12 @@ package controllers;
      private boolean isValidPetIndex(int index) {
          return index >= 0 && index < pets.size();
      }
+
+     //Checks if a pet of the same ID exists
+     public boolean petExists(int id) {
+         return getPetById(id) != null;
+     }
+
 
      public boolean updatePet(int index, Pet updated) {
 
@@ -300,6 +303,8 @@ package controllers;
              index++;
          }
 
+         if (toy == null) return "Please enter a toy";
+
          if (result.isEmpty()) {
              return "No Cats with favourite toy " + toy;
          }
@@ -465,6 +470,7 @@ package controllers;
                  if (parrot.getVocabularySize().equalsIgnoreCase(vocabSize)) {
                      count++;
                  }
+                 if (vocabSize == null) return 0;
              }
          }
 

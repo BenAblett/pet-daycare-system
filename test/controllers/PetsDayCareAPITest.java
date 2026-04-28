@@ -357,7 +357,7 @@ class PetsDayCareAPITest {
     @Test
     void testListCatsByToyNullInput() {
         String result = apiWithData.listAllCatsByFavouriteToy(null);
-        assertTrue(result.contains("No Cats"));
+        assertTrue(result.contains("Please enter"));
     }
 
 
